@@ -32,10 +32,10 @@ class Proyectos {
     }
 
     // Actualizar un proyecto
-    static async updateProject(id, name, description, startDate, endDate, status) {
+    static async updateProject(id, name, description, start_date, end_date, status) {
         try {
             const query = 'CALL UpdateProject(?, ?, ?, ?, ?, ?)';
-            const [results] = await pool.query(query, [id, name, description, startDate, endDate, status]);
+            const [results] = await pool.query(query, [id, name, description, start_date, end_date, status]);
             console.log("Proyecto actualizado con éxito");
             return { message: 'Proyecto actualizado con éxito', results };
         } catch (error) {
@@ -43,19 +43,36 @@ class Proyectos {
             throw error;
         }
     }
-
-    // Obtener proyectos por usuario
-    static async getProjectsByUser(userId) {
+    static async getProjectsByUsername(username) {
         try {
-            const query = 'CALL GetProjectsByUser(?)';
-            const [results] = await pool.query(query, [userId]);
-            console.log("Proyectos obtenidos por usuario");
-            return results[0]; // Devuelve la lista de proyectos del usuario
+            const query = 'CALL GetProjectsByUsername(?)';
+            const [results] = await pool.query(query, [username]);
+            console.log("Proyectos obtenidos por nombre de usuario:", results[0]);
+            return results[0]; 
         } catch (error) {
-            console.error("Error al obtener los proyectos:", error);
+            if (error.sqlState === '45000') {
+                console.error("Error al obtener proyectos (usuario no encontrado):", error.message);
+                throw new Error(error.message); 
+            }
+            console.error("Error inesperado al obtener proyectos:", error);
             throw error;
         }
     }
+
+    // Obtener un proyecto por ID
+    static async getProjectById(projectId) {
+        try {
+            const query = 'CALL GetProjectById(?)';
+            const [results] = await pool.query(query, [projectId]);
+            console.log("Proyecto obtenido por ID:", results[0]);
+            return results[0][0];
+        } catch (error) {
+            console.error("Error al obtener el proyecto:", error);
+            throw error;
+        }
+    }
+
+    
 
 }
 

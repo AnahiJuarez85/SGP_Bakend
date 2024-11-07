@@ -1,6 +1,7 @@
 const express = require('express');
 const Proyectos = require('../models/proyectos');
 const router = express.Router();
+const pool = require('../config/db');
 
 router.get('/', async (req, res) => {
     try {
@@ -37,7 +38,7 @@ router.post('/', async (req, res) => {
         const userId = userResult[0].id; // ID del usuario encontrado
 
         // Llamar al procedimiento almacenado para agregar el proyecto con el ID del usuario
-        const result = await Projects.addProject(name, description, formattedStartDate, formattedEndDate, status, userId);
+        const result = await Proyectos.addProject(name, description, formattedStartDate, formattedEndDate, status, userId);
         
         console.log("Respuesta enviada al cliente:", result);
         res.json(result);
@@ -53,29 +54,49 @@ router.post('/', async (req, res) => {
 // Ruta para actualizar un proyecto
 router.put('/update/:id', async (req, res) => {
     const { id } = req.params;
-    const { name, description, startDate, endDate, status } = req.body;
+    const { name, description, start_date, end_date, status } = req.body;
 
-    if (!name || !description || !startDate || !endDate || !status) {
+    if (!name || !description || !start_date || !end_date || !status) {
         return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
 
     try {
-        const result = await Projects.updateProject(id, name, description, startDate, endDate, status);
+        const result = await Proyectos.updateProject(id, name, description, start_date, end_date, status);
         res.json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Ruta para obtener proyectos por usuario
-router.get('/user/:userId', async (req, res) => {
-    const { userId } = req.params;
+router.get('/user/:username', async (req, res) => {
+    const { username } = req.params;
 
     try {
-        const projects = await Projects.getProjectsByUser(userId);
+        const projects = await Proyectos.getProjectsByUsername(username);
         res.json(projects);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        if (error.message === 'Usuario no encontrado') {
+            console.log("Error: Usuario no encontrado");
+            return res.status(404).json({ error: error.message });
+        }
+        console.log("Error al obtener proyectos por usuario:", error.message);
+        res.status(500).json({ error: 'Error al obtener proyectos' });
+    }
+});
+
+// Ruta para obtener un proyecto por ID
+router.get('/:projectId', async (req, res) => {
+    const { projectId } = req.params;
+
+    try {
+        const project = await Proyectos.getProjectById(projectId);
+        if (!project) {
+            return res.status(404).json({ error: 'Proyecto no encontrado' });
+        }
+        res.json(project);
+    } catch (error) {
+        console.log("Error al obtener el proyecto:", error.message);
+        res.status(500).json({ error: 'Error al obtener el proyecto' });
     }
 });
 

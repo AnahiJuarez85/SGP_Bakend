@@ -1,18 +1,24 @@
 const pool = require('../config/db');
 
 class TestEvidence {
-    // Agregar evidencia de prueba
+    // Método para agregar evidencia
     static async addTestEvidence(testResultId, filePath) {
+        console.log('Datos enviados al procedimiento almacenado:', { testResultId, filePath });
         const query = 'CALL AddTestEvidence(?, ?)';
-        const [results] = await pool.query(query, [testResultId, filePath]);
-        return results;
+        const values = [testResultId, filePath];
+        try {
+            const [results] = await pool.query(query, values);
+            return results; // Devuelve resultados del procedimiento
+        } catch (error) {
+            throw error; // Maneja errores
+        }
     }
 
-    // Obtener evidencia por resultado de prueba
+    // Método para obtener evidencia por resultado de prueba
     static async getTestEvidenceByResult(testResultId) {
-        const query = 'CALL GetTestResultsByTestCase(?)';
+        const query = 'CALL GetTestEvidenceByResult(?)';
         const [results] = await pool.query(query, [testResultId]);
-        return results;
+        return results[0]; 
     }
 }
 

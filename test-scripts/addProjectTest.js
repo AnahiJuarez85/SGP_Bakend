@@ -5,7 +5,7 @@ module.exports = async (driver) => {
     const startTime = Date.now();
     try {
         // Definir el endpoint y los datos del proyecto
-        const endpoint = 'http://localhost:3000/api/proyectos';
+        const endpoint = 'http://localhost:3001/api/proyectos';
         const projectData = {
             name: 'Nuevo Proyecto',
             description: 'Este es un proyecto creado por Selenium',

@@ -55,17 +55,22 @@ router.post('/scripts', upload.single('script'), async (req, res) => {
     }
 });
 
-// Ruta para obtener scripts por caso de prueba
 router.get('/scripts/testcase/:testCaseId', async (req, res) => {
     const { testCaseId } = req.params;
 
     try {
         const scripts = await AutomatedTests.getScriptPathByTestCase(testCaseId);
+
+        if (scripts.length === 0) {
+            return res.status(404).json({ error: 'No se encontraron scripts para este caso de prueba.' });
+        }
+
         res.json(scripts);
     } catch (error) {
         console.error('Error al obtener los scripts:', error);
         res.status(500).json({ error: 'Error al obtener los scripts' });
     }
 });
+
 
 module.exports = router;

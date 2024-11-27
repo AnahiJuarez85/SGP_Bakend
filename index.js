@@ -16,16 +16,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const port = 3000;
+const port = 3001;
 
 const fs = require('fs');
 const path = require('path');
 
 
-const uploadDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
-    console.log('Carpeta "uploads" creada automáticamente.');
+const evidenceDir = path.join(__dirname, 'uploads/evidence');
+if (!fs.existsSync(evidenceDir)) {
+    fs.mkdirSync(evidenceDir, { recursive: true });
+    console.log('Directorio de evidencias creado:', evidenceDir);
 }
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

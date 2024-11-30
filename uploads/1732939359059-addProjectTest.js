@@ -12,7 +12,7 @@ module.exports = async (driver) => {
             start_date: '2024-11-16',
             end_date: '2024-12-20',
             status: 'activo',
-            created_by: 8
+            created_by: '8'
         };
 
         // Realizar la solicitud POST al endpoint

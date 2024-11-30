@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 // Crear directorio si no existe
-const evidenceDir = path.join(__dirname, '../uploads/evidence');
+const evidenceDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(evidenceDir)) {
     fs.mkdirSync(evidenceDir, { recursive: true });
     console.log('Directorio de evidencias creado:', evidenceDir);
@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 
 // Filtro de tipos de archivo permitidos
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = ['image/png', 'image/jpeg', 'application/pdf'];
+    const allowedTypes = ['image/png', 'image/jpeg', 'application/pdf', 'application/javascript', 'text/javascript'  ];
     if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
     } else {

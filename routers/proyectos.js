@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
         const formattedStartDate = new Date(start_date).toISOString().slice(0, 10);
         const formattedEndDate = new Date(end_date).toISOString().slice(0, 10);
 
-        const [userResult] = await pool.query('SELECT id FROM Users WHERE username = ?', [created_by]);
+        const [userResult] = await pool.query('SELECT id FROM Users WHERE id = ?', [created_by]);
         
         if (userResult.length === 0) {
             console.log("Error: Usuario no encontrado");

@@ -1,3 +1,4 @@
+const os = require('os');
 const express = require('express');
 const cors = require('cors');
 
@@ -16,7 +17,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const port = 3001;
+const port = process.env.PORT || 3001;
+
 
 const fs = require('fs');
 const path = require('path');
@@ -46,6 +48,19 @@ app.use('/api/test-result', testResultsRoutes);
 app.get('/', (req, res) => {
     res.send('API de SGP en funcionamiento');
 });
+
+const getServerAddress = () => {
+    const networkInterfaces = os.networkInterfaces();
+    for (const interfaceName in networkInterfaces) {
+        const interfaces = networkInterfaces[interfaceName];
+        for (const iface of interfaces) {
+            if (iface.family === 'IPv4' && !iface.internal) {
+                return iface.address; // Retorna la IP pública
+            }
+        }
+    }
+    return 'localhost'; // Retorna localhost como predeterminado
+};
 
 // Iniciar el servidor
 app.listen(port, () => {
